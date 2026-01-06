@@ -1,0 +1,509 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load core_tags %}
+{% block subtitle %}
+    User Profile
+{% endblock %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="d-flex flex-column">
+            <!-- Toolbar -->
+            <div class="mb-3">
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <div class="d-flex flex-column me-3">
+                        <h1 class="h3 fw-bold mb-0">
+                            User Profile
+                        </h1>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb mb-0 pt-1">
+                                <li class="breadcrumb-item">
+                                    <a href="{% url 'accounts:cross-auth' %}" class="text-muted text-decoration-none">
+                                        Dashboard
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a href="javascript:window.history.back();"
+                                       class="text-muted text-decoration-none">
+                                        User
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item text-muted">
+                                    {{ object }}
+                                </li>
+
+                            </ol>
+                        </nav>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <a href="javascript:window.history.back();" class="btn fw-bold btn-primary shadow-sm">
+                            <i class="bx bx-arrow-back"></i> Back
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- End Toolbar -->
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card shadow-none border">
+                        <div class="card-body">
+
+                            {# IMAGE DIV #}
+                            <div class="text-center">
+                                <img class="rounded-circle" src="{{ user.profile_image|image_or_placeholder }}"
+                                     height="150px"
+                                     alt="user-image">
+
+                            </div>
+
+                            {# NAME AND OTHER #}
+                            <div class="text-center mt-2">
+                                <h5 class="mb-0">
+                                    <b class="shadow-text">{{ user.get_full_name }} - ( {{ user.username }} )</b>
+                                    {% if user.is_active %}
+                                        <i class="fa fa-check-circle text-success"></i>
+                                    {% endif %}
+                                </h5>
+                                <p class="fw-light text-muted mb-0">registered on > {{ user.date_joined }}</p>
+                            </div>
+
+                            <div class="row mt-4">
+                                <div class="col">
+                                    <p class="mb-0 text-center h3"><i class="mdi mdi-email"></i></p>
+                                    <p class="mb-0 text-center h5">Email</p>
+                                    <p class="mb-0 text-center">{{ user.email }}</p>
+                                </div>
+                                <div class="col">
+                                    <p class="mb-0 text-center h3"><i class="mdi mdi-phone"></i></p>
+                                    <p class="mb-0 text-center h5">Phone</p>
+                                    <p class="mb-0 text-center">{{ user.phone_number|check_null }}</p>
+                                </div>
+                                <div class="col text-center">
+                                    <p class="mb-0 text-center h3"><i class="mdi mdi-shield-account"></i></p>
+                                    <p class="mb-0 text-center h5">Type</p>
+                                    <p class="mb-0 text-center">
+                                        <b>
+                                            {{ user.get_user_type_display }}
+                                        </b>
+                                    </p>
+                                </div>
+                                <div class="col text-center">
+                                    <p class="mb-0 text-center h3"><i class="mdi mdi-security"></i></p>
+                                    <p class="mb-0 text-center h5">Last Login</p>
+                                    <p class="mb-0 text-center">{{ user.last_login }}</p>
+                                </div>
+
+                                {% if request.user.is_superuser or perms.accounts.change_user %}
+                                <div class="col">
+                                    <p class="mb-0 text-center h3"><i class="bx bx-user"></i></p>
+                                    <p class="mb-0 text-center h5">Edit</p>
+                                    <p class="mb-0 text-center">
+                                        <a class="text-danger"
+                                           href="{% url 'accounts:user_update_full' user.pk %}">Change</a>
+                                    </p>
+                                </div>
+
+                                <div class="col">
+                                    <p class="mb-0 text-center h3"><i class="mdi mdi-shield"></i></p>
+                                    <p class="mb-0 text-center h5">Password</p>
+                                    <p class="mb-0 text-center">
+                                        <a class="text-danger"
+                                           href="{% url 'accounts:user-password-reset-view' user.pk %}">Change</a>
+                                    </p>
+                                </div>
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if not object.is_superuser and request.user.is_superuser %}
+
+                {% if user.user_type == 'client' %}
+                    <div class="col-sm-12">
+                        <p class="mb-2 bg-danger text-white rounded p-2">
+                            This is client account, permissions are assigned by default be careful while
+                            modifying access.
+                        </p>
+                    </div>
+                {% endif %}
+
+                <!-- Enhanced Permissions Section -->
+                <form method="post" action="{% url 'accounts:user_permission_update' object.id %}">
+                    {% csrf_token %}
+                    <div class="card">
+                        <div class="card-header border-bottom">
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h4 class="card-title fw-bold text-dark">Permissions Management</h4>
+                                    <div>
+                                        <button type="button" class="btn btn-sm btn-soft-primary shadow-sm ms-1"
+                                                id="expand-all">
+                                            <i class="bx bx-plus"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-primary shadow-sm ms-1"
+                                                id="collapse-all">
+                                            <i class="bx bx-minus"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-primary shadow-sm ms-1" type="submit">
+                                            <i class="bx bx-save me-1"></i>Save Changes
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+
+                            <div class="row">
+                                <!-- User Level Permissions -->
+                                <div class="col-12 col-xl-6">
+                                    <div class="card border-0 shadow-none h-100">
+                                        <div class="card-header bg-transparent border-0">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <h5 class="card-title mb-0 text-dark">
+                                                    <i class="bx bx-user-check me-2"></i>User Level Permissions
+                                                </h5>
+                                                <div class="btn-group btn-group-sm">
+                                                    <button type="button" class="btn btn-sm btn-primary"
+                                                            id="check-all">
+                                                        <i class="bx bx-check me-1"></i>Select All
+                                                    </button>
+                                                    <button type="button" class="btn btn-sm btn-soft-primary"
+                                                            id="uncheck-all">
+                                                        <i class="bx bx-x me-1"></i>Clear All
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body p-0">
+                                            <div class="input-group p-3 border-bottom">
+                        <span class="input-group-text bg-light border-end-0">
+                            <i class="bx bx-search text-muted"></i>
+                        </span>
+                                                <input type="text" class="form-control border-start-0"
+                                                       id="permission-search"
+                                                       placeholder="Search permissions...">
+                                            </div>
+                                            <div class="permissions-container" style="height: 500px; overflow-y: auto;">
+                                                <div class="p-3">
+                                                    {% regroup permission_list by content_type.app_label as app_list %}
+
+                                                    {% for app in app_list %}
+                                                        <div class="app-group mb-2">
+                                                            <div class="app-header d-flex align-items-center p-2 bg-light border cursor-pointer"
+                                                                 data-bs-toggle="collapse"
+                                                                 data-bs-target="#app-{{ app.grouper|slugify }}-user">
+                                                                <i class="bx bx-chevron-down me-2 transition-icon"></i>
+                                                                <span class="fw-bold text-dark">{{ app.grouper|title }}</span>
+                                                                <span class="badge bg-primary ms-2">{{ app.list|length }}</span>
+                                                            </div>
+
+                                                            <div class="collapse show"
+                                                                 id="app-{{ app.grouper|slugify }}-user">
+                                                                {% regroup app.list by content_type.model as model_list %}
+
+                                                                {% for model in model_list %}
+                                                                    <div class="model-group ms-4 mt-2">
+                                                                        <div class="model-header d-flex align-items-center p-1 ps-3 cursor-pointer"
+                                                                             data-bs-toggle="collapse"
+                                                                             data-bs-target="#model-{{ app.grouper|slugify }}-{{ model.grouper|slugify }}-user">
+                                                                            <i class="bx bx-chevron-down me-2 small transition-icon"></i>
+                                                                            <span class="fw-semibold text-dark small">{{ model.grouper|title }}</span>
+                                                                            <span class="badge bg-secondary ms-2 small">{{ model.list|length }}</span>
+                                                                        </div>
+
+                                                                        <div class="collapse show"
+                                                                             id="model-{{ app.grouper|slugify }}-{{ model.grouper|slugify }}-user">
+                                                                            <div class="ms-5">
+                                                                                {% for permission in model.list %}
+                                                                                    <div class="permission-item d-flex align-items-center p-1 ps-2">
+                                                                                        <input class="form-check-input permission-checkbox me-2"
+                                                                                               type="checkbox"
+                                                                                               name="permissions"
+                                                                                               id="permission{{ permission.id }}"
+                                                                                               value="{{ permission.id }}"
+                                                                                                {% if permission.checked %}
+                                                                                               checked {% endif %}>
+                                                                                        <label class="form-check-label small text-muted mb-0 flex-grow-1"
+                                                                                               for="permission{{ permission.id }}">
+                                                                                            {{ permission.name }}
+                                                                                        </label>
+                                                                                    </div>
+                                                                                {% endfor %}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                {% endfor %}
+                                                            </div>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Group Level Permissions -->
+                                <div class="col-12 col-xl-6">
+                                    <div class="card border-0 shadow-none h-100">
+                                        <div class="card-header bg-transparent border-0">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <h5 class="card-title mb-0 text-dark">
+                                                    <i class="bx bx-group me-2"></i>Group Level Permissions
+                                                </h5>
+                                                <div class="btn-group btn-group-sm">
+                                                    <a href="{% url 'accounts:permission_add' %}"
+                                                       class="btn btn-sm btn-success">
+                                                        <i class="bx bx-plus me-1"></i> New
+                                                    </a>
+                                                    <button type="button" class="btn btn-sm btn-primary"
+                                                            id="group-check-all">
+                                                        <i class="bx bx-check me-1"></i>Select All
+                                                    </button>
+                                                    <button type="button" class="btn btn-sm btn-soft-primary"
+                                                            id="group-uncheck-all">
+                                                        <i class="bx bx-x me-1"></i>Clear All
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body p-0">
+                                            <div class="input-group p-3 border-bottom">
+                        <span class="input-group-text bg-light border-end-0">
+                            <i class="bx bx-search text-muted"></i>
+                        </span>
+                                                <input type="text" class="form-control border-start-0"
+                                                       id="group-permission-search"
+                                                       placeholder="Search group permissions...">
+                                            </div>
+                                            <div class="permissions-container" style="height: 500px; overflow-y: auto;">
+                                                <div class="p-3">
+                                                    {% for permission in group_permission_list %}
+                                                        <div class="group-permission-item border-bottom pb-3 mb-3">
+                                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                                <div class="flex-grow-1">
+                                                                    <div class="form-check mb-2">
+                                                                        <input class="form-check-input group-permission-checkbox"
+                                                                               type="checkbox"
+                                                                               name="group_permissions"
+                                                                               id="grouppermission{{ permission.id }}"
+                                                                               value="{{ permission.id }}"
+                                                                                {% if permission.checked %}
+                                                                               checked {% endif %}>
+                                                                        <label class="form-check-label fw-semibold text-dark"
+                                                                               for="grouppermission{{ permission.id }}">
+                                                                            {{ permission.name }}
+                                                                        </label>
+                                                                    </div>
+                                                                    <small class="text-muted d-block">{{ permission.content_type }}</small>
+                                                                </div>
+                                                                <div class="btn-group btn-group-sm ms-2">
+                                                                    <a href="{% url 'accounts:permission_update' permission.id %}"
+                                                                       class="btn btn-outline-primary btn-sm">
+                                                                        <i class="bx bx-edit"></i>
+                                                                    </a>
+                                                                    <a href="{% url 'accounts:permission_delete' permission.id object.id %}"
+                                                                       class="btn btn-outline-danger btn-sm">
+                                                                        <i class="bx bx-trash"></i>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                            <div class="ms-3">
+                                                                {% for perm in permission.permissions.all %}
+                                                                    <span class="badge bg-light text-dark border small me-1 mb-1">
+                                            {{ perm.content_type }}: {{ perm.name }}
+                                        </span>
+                                                                {% endfor %}
+                                                            </div>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block js-code %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Expand/Collapse All functionality
+            const expandAllBtn = document.getElementById('expand-all');
+            const collapseAllBtn = document.getElementById('collapse-all');
+
+            expandAllBtn?.addEventListener('click', function () {
+                document.querySelectorAll('.collapse').forEach(collapse => {
+                    new bootstrap.Collapse(collapse, {show: true});
+                });
+                document.querySelectorAll('.transition-icon').forEach(icon => {
+                    icon.classList.remove('bx-chevron-right');
+                    icon.classList.add('bx-chevron-down');
+                });
+            });
+
+            collapseAllBtn?.addEventListener('click', function () {
+                document.querySelectorAll('.collapse').forEach(collapse => {
+                    new bootstrap.Collapse(collapse, {hide: true});
+                });
+                document.querySelectorAll('.transition-icon').forEach(icon => {
+                    icon.classList.remove('bx-chevron-down');
+                    icon.classList.add('bx-chevron-right');
+                });
+            });
+
+            // Handle icon rotation on collapse
+            document.querySelectorAll('.app-header, .model-header').forEach(header => {
+                header.addEventListener('click', function () {
+                    const icon = this.querySelector('.transition-icon');
+                    if (icon.classList.contains('bx-chevron-down')) {
+                        icon.classList.replace('bx-chevron-down', 'bx-chevron-right');
+                    } else {
+                        icon.classList.replace('bx-chevron-right', 'bx-chevron-down');
+                    }
+                });
+            });
+
+            // User Level Permissions - Select All/Clear All
+            const checkAllLink = document.getElementById('check-all');
+            const uncheckAllLink = document.getElementById('uncheck-all');
+            const permissionCheckboxes = document.querySelectorAll('.permission-checkbox');
+
+            function checkAll() {
+                permissionCheckboxes.forEach(function (checkbox) {
+                    checkbox.checked = true;
+                });
+            }
+
+            function uncheckAll() {
+                permissionCheckboxes.forEach(function (checkbox) {
+                    checkbox.checked = false;
+                });
+            }
+
+            checkAllLink?.addEventListener('click', checkAll);
+            uncheckAllLink?.addEventListener('click', uncheckAll);
+
+            // Group Level Permissions
+            const groupCheckAllLink = document.getElementById('group-check-all');
+            const groupUncheckAllLink = document.getElementById('group-uncheck-all');
+            const groupPermissionCheckboxes = document.querySelectorAll('.group-permission-checkbox');
+
+            function groupCheckAll() {
+                groupPermissionCheckboxes.forEach(function (checkbox) {
+                    checkbox.checked = true;
+                });
+            }
+
+            function groupUncheckAll() {
+                groupPermissionCheckboxes.forEach(function (checkbox) {
+                    checkbox.checked = false;
+                });
+            }
+
+            groupCheckAllLink?.addEventListener('click', groupCheckAll);
+            groupUncheckAllLink?.addEventListener('click', groupUncheckAll);
+
+            // Search functionality
+            const permissionSearch = document.getElementById('permission-search');
+            const groupPermissionSearch = document.getElementById('group-permission-search');
+
+            function setupSearch(inputElement, containerClass) {
+                inputElement?.addEventListener('input', function () {
+                    const searchText = this.value.trim().toLowerCase();
+                    const containers = document.querySelectorAll(containerClass);
+
+                    containers.forEach(container => {
+                        const items = container.querySelectorAll('.permission-item');
+                        let hasVisibleItems = false;
+
+                        items.forEach(item => {
+                            const permissionText = item.textContent.toLowerCase();
+                            if (permissionText.includes(searchText)) {
+                                item.style.display = 'flex';
+                                hasVisibleItems = true;
+                                // Expand parent sections
+                                let parent = item.closest('.collapse');
+                                while (parent) {
+                                    new bootstrap.Collapse(parent, {show: true});
+                                    const header = parent.previousElementSibling;
+                                    if (header && header.querySelector('.transition-icon')) {
+                                        header.querySelector('.transition-icon').classList.replace('bx-chevron-right', 'bx-chevron-down');
+                                    }
+                                    parent = parent.parentElement.closest('.collapse');
+                                }
+                            } else {
+                                item.style.display = 'none';
+                            }
+                        });
+
+                        // Show/hide app/model groups based on visibility
+                        const appGroup = container.closest('.app-group');
+                        const modelGroup = container.closest('.model-group');
+
+                        if (appGroup) {
+                            appGroup.style.display = hasVisibleItems ? 'block' : 'none';
+                        }
+                        if (modelGroup) {
+                            modelGroup.style.display = hasVisibleItems ? 'block' : 'none';
+                        }
+                    });
+                });
+            }
+
+            setupSearch(permissionSearch, '.permissions-container');
+            setupSearch(groupPermissionSearch, '.permissions-container');
+        });
+    </script>
+
+    <style>
+        .cursor-pointer {
+            cursor: pointer;
+        }
+
+        .transition-icon {
+            transition: transform 0.2s ease;
+        }
+
+        .app-header:hover, .model-header:hover {
+            background-color: #e9ecef !important;
+        }
+
+        .permission-item:hover {
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .permissions-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .permissions-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        .permissions-container::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+
+        .permissions-container::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+    </style>
+{% endblock %}

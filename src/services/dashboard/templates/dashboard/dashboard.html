@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+
+{% block subtitle %} {{ request.user }} {% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="card mini-stats-wid">
+                <div class="card-body">
+                    <div class="media">
+                        <div class="mr-3 align-self-center">
+                            <i class="bx bx-user-check h2 text-primary mb-0"></i>
+                        </div>
+                        <div class="media-body">
+                            <p class="text-muted mb-2">Registrations</p>
+                            <h5 class="mb-0">
+                                00
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="card mini-stats-wid">
+                <div class="card-body">
+                    <div class="media">
+                        <div class="mr-3 align-self-center">
+                            <i class="bx bx-import h2 text-success mb-0"></i>
+                        </div>
+                        <div class="media-body">
+                            <p class="text-muted mb-2">YEAR</p>
+                            <h5 class="mb-0">
+                                $ 00 <span
+                                    class="font-size-14 text-muted">(00)</span>
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="card mini-stats-wid">
+                <div class="card-body">
+                    <div class="media">
+                        <div class="mr-3 align-self-center">
+                            <i class="bx bx-export h2 text-danger mb-0"></i>
+                        </div>
+                        <div class="media-body">
+                            <p class="text-muted mb-2">Month</p>
+                            <h5 class="mb-0">
+                                $ 00 <span
+                                    class="font-size-14 text-muted">(00)</span>
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="card mini-stats-wid">
+                <div class="card-body">
+                    <div class="media">
+                        <div class="mr-3 align-self-center">
+                            <i class="bx bxl-telegram h2 text-primary mb-0"></i>
+                        </div>
+                        <div class="media-body">
+                            <p class="text-muted mb-2">Day</p>
+                            <h5 class="mb-0">
+                                $ 00 <span
+                                    class="font-size-14 text-muted">(00)</span>
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

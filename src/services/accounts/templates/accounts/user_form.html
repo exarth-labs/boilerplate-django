@@ -1,0 +1,29 @@
+{% extends 'include/base/base_create.html' %}
+
+{% block js-code %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const phoneInput = document.getElementById('id_phone_number');
+            phoneInput.addEventListener('input', function (e) {
+                let numbers = this.value.replace(/\D/g, ''); // Remove all non-digits
+                if (numbers.length > 10) numbers = numbers.slice(0, 10); // Only 10 digits allowed
+
+                let formatted = '';
+                if (numbers.length > 0) {
+                    formatted += '(' + numbers.substring(0, 3);
+                }
+                if (numbers.length >= 4) {
+                    formatted += ') ' + numbers.substring(3, 6);
+                }
+                if (numbers.length >= 7) {
+                    formatted += '-' + numbers.substring(6, 10);
+                }
+
+                this.value = formatted;
+            });
+        });
+    </script>
+{% endblock %}
+
+
+

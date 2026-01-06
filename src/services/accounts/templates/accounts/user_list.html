@@ -1,0 +1,80 @@
+{% extends 'include/base/base_list.html' %}
+
+{% block toolbar_actions %}
+    {% if perms.accounts.add_user %}
+        <a href="{% url 'accounts:user_create' %}" class="btn fw-bold btn-primary shadow-sm">
+            <i class="bx bx-plus"></i> Add New
+        </a>
+    {% endif %}
+{% endblock %}
+
+{% block sub_content %}
+    {% if object_list %}
+        <thead class="table-light">
+        <tr>
+            <th class="text-nowrap"><i class="bx bx-hash me-1"></i>ID</th>
+            <th class="text-nowrap"><i class="bx bx-user me-1"></i>Name</th>
+            <th class="text-nowrap"><i class="bx bx-envelope me-1"></i>Email</th>
+            <th class="text-nowrap"><i class="bx bx-phone me-1"></i>Phone</th>
+            <th class="text-nowrap"><i class="bx bx-briefcase me-1"></i>Type</th>
+            <th class="text-nowrap text-center"><i class="bx bx-check-circle me-1"></i>Status</th>
+            <th class="text-nowrap text-center"><i class="bx bx-cog me-1"></i>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for obj in object_list %}
+            <tr>
+                <td class="fw-bold text-muted">#{{ obj.id }}</td>
+                <td>
+                    <div class="d-flex align-items-center">
+                        <div>
+                            <div class="fw-semibold">{{ obj.get_full_name|default:obj.username }}</div>
+                            <small class="text-muted">@{{ obj.username }}</small>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <a href="mailto:{{ obj.email }}" class="text-decoration-none">
+                        {{ obj.email }}
+                    </a>
+                </td>
+                <td>
+                    {% if obj.phone_number %}
+                        <a href="tel:{{ obj.phone_number }}" class="text-decoration-none">
+                            {{ obj.phone_number }}
+                        </a>
+                    {% else %}
+                        <span class="text-muted">—</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <span class="badge bg-light text-dark border">
+                        <i class="bx bx-briefcase me-1"></i>{{ obj.get_user_type_display }}
+                    </span>
+                </td>
+                <td class="text-center">
+                    {% if obj.is_active %}
+                        <span class="badge bg-success-subtle text-success">
+                            <i class="bx bx-check-circle me-1"></i>Active
+                        </span>
+                    {% else %}
+                        <span class="badge bg-danger-subtle text-danger">
+                            <i class="bx bx-x-circle me-1"></i>Inactive
+                        </span>
+                    {% endif %}
+                </td>
+                <td class="text-center">
+                    <div class="btn-group btn-group-sm" role="group">
+                        <a href="{% url 'accounts:user_detail' obj.pk %}"
+                           class="btn btn-light">
+                            <i class="bx bx-show"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    {% else %}
+        {% include 'include/globals/data-not-found.html' %}
+    {% endif %}
+{% endblock %}

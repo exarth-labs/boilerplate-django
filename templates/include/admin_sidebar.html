@@ -1,0 +1,67 @@
+<ul class="navbar-nav" id="navbar-nav">
+    <li class="menu-title"><span data-key="t-menu">Menu</span></li>
+
+
+    <li class="nav-item">
+        <a class="nav-link menu-link" href="{% url 'dashboard:dashboard' %}" role="button">
+            <i class="las la-signal"></i> <span data-key="t-products">Dashboard</span>
+        </a>
+    </li>
+
+    {% if request.user.is_superuser or perms.accounts.view_user %}
+
+        <li class="nav-item">
+            <a class="nav-link menu-link" href="{% url 'accounts:user_list' %}" role="button">
+                <i class=" las la-user"></i><span data-key="t-dashboards">Users</span>
+            </a>
+        </li>
+    {% endif %}
+
+    {% if request.user.is_superuser or perms.management.view_country or perms.management.view_state or perms.whisper.view_emailnotification %}
+
+        <li class="nav-item">
+            <a class="nav-link menu-link" href="#sidebarPages3" data-bs-toggle="collapse" role="button"
+               aria-expanded="false"
+               aria-controls="sidebarPages3">
+                <i class="ri ri-bell-fill"></i> <span data-key="t-pages">Management</span>
+            </a>
+            <div class="collapse menu-dropdown" id="sidebarPages3">
+                <ul class="nav nav-sm flex-column">
+
+                    {% if request.user.is_superuser or perms.management.view_country %}
+
+                        <li class="nav-item">
+                            <a href="{% url 'management:country_list' %}" class="nav-link"
+                               data-key="t-starter">Countries</a>
+                        </li>
+                    {% endif %}
+
+                    {% if request.user.is_superuser or perms.management.view_state %}
+
+                        <li class="nav-item">
+                            <a href="{% url 'management:state_list' %}" class="nav-link"
+                               data-key="t-starter">States</a>
+                        </li>
+                    {% endif %}
+
+                    {% if request.user.is_superuser or perms.whisper.view_emailnotification %}
+                        <li class="nav-item">
+                            <a href="{% url 'whisper:emailnotification-list' %}" class="nav-link"
+                               data-key="t-starter">Emails</a>
+                        </li>
+                    {% endif %}
+
+                </ul>
+            </div>
+        </li>
+    {% endif %}
+
+    {% if request.user.is_superuser %}
+        <li class="nav-item">
+            <a class="text-danger nav-link menu-link" href="/admin/" role="button">
+                <i class="bx bx-shield-x"></i><span data-key="t-dashboards">Access</span>
+            </a>
+        </li>
+    {% endif %}
+
+</ul>
