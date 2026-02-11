@@ -48,8 +48,14 @@ def get_list_header_stats(qs, fields):
     queryset = qs
     stats = {
         'total_count': queryset.count(),
-        'this_month_count': queryset.filter(created_at__month=datetime.now().month).count(),
     }
+    try:
+        stats['this_month_count'] = queryset.filter(created_at__month=datetime.now().month).count()
+    except FieldError:
+        try:
+            stats['this_month_count'] = queryset.filter(created_on__month=datetime.now().month).count()
+        except FieldError:
+            stats['this_month_count'] = 0
     try:
         active_count = queryset.filter(is_active=True).count()
         stats['active_count'] = active_count

@@ -1,42 +1,11 @@
+import re
+
 from django.core.exceptions import ValidationError
 from django.db import models
-
 from phonenumber_field.modelfields import PhoneNumberField
-import re
-from django.core.exceptions import ValidationError
 
-def phone_number_validator(value):
-    pattern = r'^\(\d{3}\) \d{3}-\d{4}$'
-    if not re.match(pattern, value):
-        raise ValidationError('Phone number must be in the format (xxx) xxx-xxxx')
 
-def phone_number_null_or_validator(value):
-    if value is None or value == '':
-        return
-    pattern = r'^\(\d{3}\) \d{3}-\d{4}$'
-    if not re.match(pattern, value):
-        raise ValidationError('Phone number must be in the format (xxx) xxx-xxxx')
 
-def validate_us_zip_code(value):
-    """
-    Validates that the value is a valid US ZIP code:
-    - 5 digits (e.g., 12345)
-    - or ZIP+4 format (e.g., 12345-6789)
-    """
-    if value is None or value == '':
-        return
-    zip_regex = re.compile(r'^\d{5}(-\d{4})?$')
-    if not zip_regex.match(value):
-        raise ValidationError("Enter a valid US ZIP code (e.g., 12345 or 12345-6789).")
-
-def phone_extension_validator(value):
-    """
-    Validates that a phone extension is 2-6 digits (optional field).
-    """
-    if value in [None, '']:
-        return
-    if not re.match(r'^\d{2,6}$', value):
-        raise ValidationError("Enter a valid phone extension (2-6 digits).")
 
 
 """ PLATFORMS """

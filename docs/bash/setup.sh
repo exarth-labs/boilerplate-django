@@ -1,6 +1,6 @@
 #!/bin/bash
 # =============================================================================
-# EXARTH COMPANY SITE - Initial Setup Script
+# DJANGO BOILERPLATE - Initial Setup Script
 # =============================================================================
 # Description: Complete project setup including venv, dependencies, migrations
 # Usage: ./docs/bash/setup.sh (from any directory)
@@ -17,7 +17,7 @@ echo "📁 Working in: $PROJECT_ROOT"
 
 echo ""
 echo "=========================================="
-echo "   EXARTH COMPANY SITE - INITIAL SETUP"
+echo "   DJANGO BOILERPLATE - INITIAL SETUP"
 echo "=========================================="
 echo ""
 

@@ -61,6 +61,9 @@ INSTALLED_APPS = [
     'dj_rest_auth.registration',
     'drf_yasg',
 
+    # CORS
+    'corsheaders',
+
     # OTHER APPS
     'src.apps.whisper.apps.WhisperConfig',
 
@@ -79,15 +82,15 @@ MIDDLEWARE = [
     # DJANGO MIDDLEWARES
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django_browser_reload.middleware.BrowserReloadMiddleware',
 
     # YOUR MIDDLEWARES
-    # "allauth.account.middleware.AccountMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 AUTHENTICATION_BACKENDS = (
@@ -232,10 +235,10 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 """ DEBUGGING TOOLS ------------------------------------------------------------------------------- """
 
-# if ENVIRONMENT != 'server':
-#     INSTALLED_APPS += [
-#         'django_browser_reload'
-#     ]
-#     MIDDLEWARE += [
-#         'django_browser_reload.middleware.BrowserReloadMiddleware'
-#     ]
+if ENVIRONMENT != 'server':
+    INSTALLED_APPS += [
+        'django_browser_reload'
+    ]
+    MIDDLEWARE += [
+        'django_browser_reload.middleware.BrowserReloadMiddleware'
+    ]

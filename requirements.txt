@@ -8,6 +8,7 @@ DateTime
 
 django
 django-environ
+psycopg2-binary
 django-filter
 django-allauth
 django-resized
@@ -15,10 +16,12 @@ python-decouple
 django-crispy-forms
 djangorestframework
 dj-rest-auth
+django-cors-headers
 requests
 
 crispy-bootstrap5
 django-browser-reload
+django-widget-tweaks
 drf-yasg
 django-phonenumber-field[phonenumbers]
 

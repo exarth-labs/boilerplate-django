@@ -42,7 +42,7 @@ def relative_url(value, field_name, urlencode=None):
 
 
 @register.simple_tag
-def get_item(dictionary, key, related_object=None):
+def get_nested_item(dictionary, key, related_object=None):
     if related_object:
         dictionary = dictionary[related_object]
     return dictionary.get(key)
@@ -348,11 +348,11 @@ def cool_number(value, num_decimals=2):
         return formatted_number.format(int_value / 1_000_000_000_000).rstrip('0').rstrip('.') + 'T'
 
 
-@register.filter
-def check_permission(request, perms, permission_name):
-    if request.user.is_superuser:
+@register.simple_tag
+def check_permission(user, permission_name):
+    if user.is_superuser:
         return True
-    return perms and perms.get(permission_name, False)
+    return user.has_perm(permission_name)
 
 
 from django.utils.safestring import mark_safe
