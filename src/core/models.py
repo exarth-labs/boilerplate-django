@@ -1,9 +1,9 @@
+import re
+
 from django.core.exceptions import ValidationError
 from django.db import models
-
 from phonenumber_field.modelfields import PhoneNumberField
-import re
-from django.core.exceptions import ValidationError
+
 
 def phone_number_validator(value):
     pattern = r'^\(\d{3}\) \d{3}-\d{4}$'
