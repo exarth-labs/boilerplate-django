@@ -8,6 +8,7 @@ DateTime
 
 django
 django-environ
+psycopg2-binary
 django-filter
 django-allauth
 django-resized
