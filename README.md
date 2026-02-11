@@ -153,7 +153,7 @@ chmod +x docs/bash/*.sh
 ### Or manually:
 
 ```bash
-python manage.py makemigrations company projects resources services website
+python manage.py makemigrations
 python manage.py migrate
 ```
 
@@ -174,9 +174,9 @@ python manage.py migrate
 ```
 
 Default credentials (for development):
-- **Email:** mark@exarth.com
-- **Username:** mark
-- **Password:** mark
+- **Email:** admin@example.com
+- **Username:** admin
+- **Password:** admin
 
 Access admin panel at: `http://localhost:8000/admin/`
 
@@ -202,14 +202,15 @@ python manage.py runserver 0.0.0.0:8080
 
 | App | Path | Description |
 |-----|------|-------------|
-| `company` | `src/services/company/` | Company info, team, about pages |
-| `projects` | `src/services/projects/` | Portfolio and project showcase |
-| `resources` | `src/services/resources/` | Resources and downloads |
-| `services` | `src/services/services/` | Service offerings |
-| `website` | `src/website/` | Main website, homepage, contact |
+| `core` | `src/core/` | Core utilities, models, helpers, signals |
+| `accounts` | `src/services/accounts/` | User accounts & authentication |
+| `dashboard` | `src/services/dashboard/` | Dashboard functionality |
+| `management` | `src/services/management/` | Country & State management |
+| `whisper` | `src/apps/whisper/` | Email notification service |
+| `website` | `src/website/` | Public website frontend |
 
 ---
 
 ## 📄 License
 
-This project is proprietary software owned by Exarth Corporation. All rights reserved.
+This project is open source software by Exarth Labs.

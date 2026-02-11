@@ -16,6 +16,7 @@ python-decouple
 django-crispy-forms
 djangorestframework
 dj-rest-auth
+django-cors-headers
 requests
 
 crispy-bootstrap5

@@ -3,7 +3,6 @@ from django.contrib.auth.models import AbstractUser
 from django_resized import ResizedImageField
 
 from src.core.bll import get_action_urls
-from src.core.models import phone_number_null_or_validator
 
 
 class UserType(models.TextChoices):
@@ -18,8 +17,7 @@ class User(AbstractUser):
         help_text='size of logo must be 250*250 and format must be png image file', crop=['middle', 'center']
     )
     phone_number = models.CharField(
-        max_length=14, blank=True, null=True,
-        validators=[phone_number_null_or_validator]
+        max_length=14, blank=True, null=True
     )
     user_type = models.CharField(max_length=50, choices=UserType.choices, default=UserType.client)
     description = models.TextField(null=True, blank=True)
@@ -43,7 +41,7 @@ class User(AbstractUser):
         super().delete(*args, **kwargs)
 
     def get_display_fields(self):
-        return ['id', 'first_name', 'last_name', 'email', 'platform', 'user_type', 'is_active', 'is_staff']
+        return ['id', 'first_name', 'last_name', 'email', 'user_type', 'is_active', 'is_staff']
 
     def get_action_urls(self, user):
         return get_action_urls(self, user, True)
