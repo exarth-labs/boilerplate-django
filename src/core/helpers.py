@@ -1,7 +1,5 @@
-from datetime import datetime
-
-import pytz
+from datetime import datetime, timezone
 
 
 def get_current_datetime():
-    return datetime.now(pytz.utc)
+    return datetime.now(timezone.utc)

@@ -1,15 +1,12 @@
-six
 Faker
 pillow
 markdown
 python-dateutil
-pytz
-DateTime
 
-django
+Django==5.2.11
 django-environ
 django-filter
-django-allauth
+django-allauth==65.0.2
 django-resized
 python-decouple
 django-crispy-forms

@@ -84,10 +84,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django_browser_reload.middleware.BrowserReloadMiddleware',
+
+    # ALLAUTH MIDDLEWARE (required since allauth 0.56+)
+    'allauth.account.middleware.AccountMiddleware',
 
     # YOUR MIDDLEWARES
-    # "allauth.account.middleware.AccountMiddleware",
 ]
 
 AUTHENTICATION_BACKENDS = (
@@ -180,7 +181,6 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = env('TIME_ZONE')
 USE_I18N = True
-USE_L10N = True
 USE_TZ = True
 
 """ EMAIL CONFIGURATION ------------------------------------------------------------------------------ """
@@ -220,9 +220,8 @@ DJANGORESIZED_DEFAULT_FORMAT_EXTENSIONS = {
 DJANGORESIZED_DEFAULT_NORMALIZE_ROTATION = True
 
 """ ALL-AUTH SETUP --------------------------------------------------------------------------------  """
-ACCOUNT_LOGOUT_ON_GET = True
 SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
-ACCOUNT_LOGIN_METHODS = ['email']
+ACCOUNT_LOGIN_METHODS = {"email"}
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
